@@ -12,6 +12,10 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const adminRoutes = require('./routes/adminRoutes'); 
 
 const app = express();
+const allowedOrigins = [
+    "https://adminesummit.netlify.app", 
+    "http://127.0.0.1:5500"
+];
 const server = http.createServer(app);
 
 const io = new Server(server, {

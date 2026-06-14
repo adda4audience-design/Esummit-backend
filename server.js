@@ -15,7 +15,10 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    cors: { origin: '*' }
+    cors: {
+        origin: ["http://127.0.0.1:5500", "https://esummit-backend-gonf.onrender.com"],
+        methods: ["GET", "POST"]
+    }
 });
 
 app.set('io', io);
@@ -29,7 +32,11 @@ connectDB();
 
 // 2. Security Middleware
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({
+    origin: ["http://127.0.0.1:5500", "https://esummit-backend-gonf.onrender.com"], // Add your local dev URL here
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 

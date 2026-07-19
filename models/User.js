@@ -7,24 +7,29 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true }, 
     
+    // Role Details (NEW)
+    role: { type: String, required: true },
+    specificRole: { type: String },
+    company: { type: String },
+
     // Registration Specifics
     delegateStatus: { type: String, enum: ['yes', 'no'], required: true },
     collegeName: { type: String, default: 'UIET KUK' },
     city: { type: String, default: 'Kurukshetra' },
     state: { type: String, default: 'Haryana' },
     needHostel: { type: Boolean, default: false },
-    gender: { type: String }, // For non-UIET delegates
+    gender: { type: String }, 
     
-    // UIET Specifics
+    // UIET / Student Specifics
     branch: { type: String },
     year: { type: String },
     rollNo: { type: String },
     
-    // Operational Tracking
-    paymentStatus: { type: String, enum: ['Pending', 'Success'], default: 'Pending' },
+    // Operational Tracking (Payment Removed)
     checkInStatus: { type: Boolean, default: false },
-    hostelAllocated: { type: Boolean, default: false }, // Admin controlled allocation
+    hostelAllocated: { type: Boolean, default: false }, 
     allocatedHostelName: { type: String },
+    registeredEvents: { type: [String], default: [] },
     
     ticketId: { type: String, unique: true, sparse: true }
 }, { timestamps: true });

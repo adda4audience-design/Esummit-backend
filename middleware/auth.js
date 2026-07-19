@@ -18,7 +18,7 @@ const protect = (req, res, next) => {
     }
 };
 
-// NEW: Strict Admin Security Layer
+// Strict Admin Security Layer
 const protectAdmin = (req, res, next) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {

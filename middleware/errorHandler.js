@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
     let statusCode = err.statusCode || 500;
     let message = err.message || 'Internal Server Error';
 
-    // Handle Zod Validation Errors cleanly (UPDATED)
+    // Handle Zod Validation Errors cleanly
     if (err.name === 'ZodError') {
         statusCode = 400;
         // Safely extract the array whether it's named 'errors' or 'issues'

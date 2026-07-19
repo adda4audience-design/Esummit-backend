@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const Order = require('../models/Order');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -12,6 +11,9 @@ const RegisterSchema = z.object({
     phoneNumber: z.string().regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
     email: z.string().email("Invalid email domain layout"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
+    role: z.string(), // NEW
+    specificRole: z.string().optional(), // NEW
+    company: z.string().optional(), // NEW
     delegateStatus: z.enum(['yes', 'no']),
     collegeName: z.string().optional(),
     city: z.string().optional(),
@@ -31,7 +33,10 @@ const LoginSchema = z.object({
 const UpdateProfileSchema = z.object({
     fullName: z.string().min(2, "Name must be at least 2 characters long").optional(),
     phoneNumber: z.string().regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits").optional(),
+    company: z.string().optional(), // NEW
     collegeName: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
     gender: z.string().optional(),
     branch: z.string().optional(),
     year: z.string().optional(),
@@ -53,19 +58,13 @@ exports.register = async (req, res, next) => {
         const salt = await bcrypt.genSalt(12);
         const hashedPassword = await bcrypt.hash(validatedData.password, salt);
 
-        let ticketId = undefined;
-        let paymentStatus = 'Pending';
-
-        if (validatedData.delegateStatus === 'yes') {
-            paymentStatus = 'Success';
-            const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
-            ticketId = `ES26-${randomHex}`;
-        }
+        // Generate Ticket ID for everyone automatically since payment is removed
+        const randomHex = crypto.randomBytes(4).toString('hex').toUpperCase();
+        const ticketId = `ES26-${randomHex}`;
 
         const newUser = await User.create({
             ...validatedData,
             password: hashedPassword,
-            paymentStatus,
             ticketId
         });
 
@@ -134,12 +133,9 @@ exports.getProfile = async (req, res, next) => {
             throw error;
         }
 
-        const order = await Order.findOne({ userId: user._id }).sort({ createdAt: -1 });
-
         res.status(200).json({
             success: true,
-            data: user,
-            order: order || null
+            data: user
         });
     } catch (error) {
         next(error);
@@ -160,8 +156,15 @@ exports.updateProfile = async (req, res, next) => {
 
         if (validatedData.fullName) user.fullName = validatedData.fullName;
         if (validatedData.phoneNumber) user.phoneNumber = validatedData.phoneNumber;
+        if (validatedData.city) user.city = validatedData.city;
+        if (validatedData.state) user.state = validatedData.state;
+        
+        if (user.role === 'non-student' && validatedData.company) {
+            user.company = validatedData.company;
+        }
+
         if (validatedData.gender && user.delegateStatus === 'no') user.gender = validatedData.gender;
-        if (validatedData.collegeName && user.delegateStatus === 'no') user.collegeName = validatedData.collegeName;
+        if (validatedData.collegeName && user.role !== 'non-student') user.collegeName = validatedData.collegeName;
         
         if (user.delegateStatus === 'yes') {
             if (validatedData.branch) user.branch = validatedData.branch;

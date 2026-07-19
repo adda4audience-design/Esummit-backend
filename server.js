@@ -8,8 +8,9 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-const adminRoutes = require('./routes/adminRoutes'); 
+const adminRoutes = require('./routes/adminRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const goodyRoutes = require('./routes/goodyRoutes');
 
 const app = express();
 const allowedOrigins = [
@@ -39,7 +40,6 @@ connectDB();
 app.use(express.json());
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
@@ -59,8 +59,10 @@ app.use('/api/', apiLimiter);
 
 // 3. Routes Mounting
 app.use('/api/auth', authRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminRoutes); // Payment Routes Removed
+app.use('/api/events', eventRoutes);
+app.use('/api/goodies', goodyRoutes);
+
 app.get('/health', (req, res) => {
     res.status(200).send('Mainframe is active.');
 });

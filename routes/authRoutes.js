@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const { protect, protectAdmin } = require('../middleware/auth'); // IMPORT BOTH
+const { protect, protectAdmin } = require('../middleware/auth');
 
 // Public routes...
 router.post('/register', authController.register);
@@ -15,6 +15,6 @@ router.post('/check-in', protect, authController.checkInDelegate);
 // SECURED Admin routes (Swapped 'protect' for 'protectAdmin')
 router.get('/admin/users', protectAdmin, authController.getAllUsers);
 router.put('/admin/allocate-hostel', protectAdmin, authController.allocateHostelAdmin);
-router.put('/admin/toggle-checkin', protectAdmin, authController.toggleCheckInAdmin); // NEW OVERRIDE
+router.put('/admin/toggle-checkin', protectAdmin, authController.toggleCheckInAdmin);
 
 module.exports = router;

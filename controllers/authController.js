@@ -126,7 +126,7 @@ exports.login = async (req, res, next) => {
 // --- GET PROFILE FUNCTION ---
 exports.getProfile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        const user = await User.findById(req.user.id).select('-password +registeredEvents');
         if (!user) {
             const error = new Error('Profile not found in mainframe.');
             error.statusCode = 404;

@@ -88,7 +88,7 @@ exports.login = async (req, res, next) => {
     try {
         const validatedData = LoginSchema.parse(req.body);
 
-        const user = await User.findOne({ email: validatedData.email });
+        const user = await User.findOne({ email: validatedData.email }).select('+password');
         if (!user) {
             const error = new Error('Invalid credentials');
             error.statusCode = 401;

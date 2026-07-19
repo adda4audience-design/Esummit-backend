@@ -88,7 +88,7 @@ exports.login = async (req, res, next) => {
     try {
         const validatedData = LoginSchema.parse(req.body);
 
-        const user = await User.findOne({ email: validatedData.email }).select('+password');
+        const user = await User.findOne({ email: validatedData.email });
         if (!user) {
             const error = new Error('Invalid credentials');
             error.statusCode = 401;
@@ -126,7 +126,7 @@ exports.login = async (req, res, next) => {
 // --- GET PROFILE FUNCTION ---
 exports.getProfile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.id).select('-password +registeredEvents');
+        const user = await User.findById(req.user.id).select('-password');
         if (!user) {
             const error = new Error('Profile not found in mainframe.');
             error.statusCode = 404;

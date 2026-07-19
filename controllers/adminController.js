@@ -1,5 +1,5 @@
 // controllers/adminController.js
-const Admin = require('../models/admin');
+const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 

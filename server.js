@@ -14,6 +14,9 @@ const goodyRoutes = require('./routes/goodyRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 
 const app = express();
+
+app.set('trust proxy', 1);
+
 const allowedOrigins = [
     "https://adminesummit.netlify.app", 
     "https://esummituietkuk.netlify.app",

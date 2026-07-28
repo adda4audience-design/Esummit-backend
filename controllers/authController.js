@@ -33,14 +33,15 @@ const LoginSchema = z.object({
 const UpdateProfileSchema = z.object({
     fullName: z.string().min(2, "Name must be at least 2 characters long").optional(),
     phoneNumber: z.string().regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits").optional(),
-    company: z.string().optional(), // NEW
+    company: z.string().optional(), 
     collegeName: z.string().optional(),
     city: z.string().optional(),
     state: z.string().optional(),
     gender: z.string().optional(),
     branch: z.string().optional(),
     year: z.string().optional(),
-    rollNo: z.string().optional()
+    rollNo: z.string().optional(),
+    needHostel: z.boolean().optional() // <-- ADD THIS LINE
 });
 
 // --- REGISTRATION FUNCTION ---
@@ -171,6 +172,8 @@ exports.updateProfile = async (req, res, next) => {
             if (validatedData.year) user.year = validatedData.year;
             if (validatedData.rollNo) user.rollNo = validatedData.rollNo;
         }
+
+        if (validatedData.needHostel !== undefined) user.needHostel = validatedData.needHostel;
 
         await user.save();
 

@@ -11,6 +11,7 @@ router.post('/login', authController.login);
 router.get('/profile', protect, authController.getProfile); 
 router.put('/profile', protect, authController.updateProfile);
 router.post('/check-in', protect, authController.checkInDelegate);
+router.put('/apply-hostel', protect, authController.applyForHostel);
 
 // SECURED Admin routes (Swapped 'protect' for 'protectAdmin')
 router.get('/admin/users', protectAdmin, authController.getAllUsers);

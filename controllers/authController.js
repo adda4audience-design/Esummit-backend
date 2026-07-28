@@ -283,3 +283,29 @@ exports.toggleCheckInAdmin = async (req, res, next) => {
         next(error);
     }
 };
+
+// --- USER FACING: APPLY FOR HOSTEL POST-REGISTRATION ---
+exports.applyForHostel = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'Profile not found in mainframe.' });
+        }
+
+        if (user.needHostel) {
+            return res.status(400).json({ success: false, error: 'Hostel request is already active.' });
+        }
+
+        user.needHostel = true;
+        await user.save();
+
+        req.app.get('io').emit('mainframe_update'); // Tell admin panel to update
+        res.status(200).json({
+            success: true,
+            message: 'Hostel application submitted successfully.',
+            data: user
+        });
+    } catch (error) {
+        next(error);
+    }
+};

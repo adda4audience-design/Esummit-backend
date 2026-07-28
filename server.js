@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const goodyRoutes = require('./routes/goodyRoutes');
+const teamRoutes = require('./routes/teamRoutes');
 
 const app = express();
 const allowedOrigins = [
@@ -62,6 +63,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes); // Payment Routes Removed
 app.use('/api/events', eventRoutes);
 app.use('/api/goodies', goodyRoutes);
+app.use('/api/teams', teamRoutes);
 
 app.get('/health', (req, res) => {
     res.status(200).send('Mainframe is active.');

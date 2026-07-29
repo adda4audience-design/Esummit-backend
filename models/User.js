@@ -30,6 +30,8 @@ const UserSchema = new mongoose.Schema({
     hostelAllocated: { type: Boolean, default: false }, 
     allocatedHostelName: { type: String },
     registeredEvents: { type: [String], default: [] },
+    referredBy: { type: String, default: null }, 
+    referralCount: { type: Number, default: 0 },
     
     ticketId: { type: String, unique: true, sparse: true }
 }, { timestamps: true });

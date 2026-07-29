@@ -22,7 +22,8 @@ const RegisterSchema = z.object({
     gender: z.string().optional(),
     branch: z.string().optional(),
     year: z.string().optional(),
-    rollNo: z.string().optional()
+    rollNo: z.string().optional(), 
+    referredBy: z.string().optional()
 });
 
 const LoginSchema = z.object({
@@ -59,6 +60,16 @@ exports.register = async (req, res, next) => {
         const salt = await bcrypt.genSalt(12);
         const hashedPassword = await bcrypt.hash(validatedData.password, salt);
 
+        let appliedReferral = null;
+        if (validatedData.referredBy) {
+            const referrer = await User.findOne({ ticketId: validatedData.referredBy });
+            if (referrer) {
+                appliedReferral = validatedData.referredBy;
+                referrer.referralCount += 1;
+                await referrer.save();
+            }
+        }
+
         // Generate Ticket ID for everyone automatically since payment is removed
         const randomHex = crypto.randomBytes(4).toString('hex').toUpperCase();
         const ticketId = `ES26-${randomHex}`;
@@ -66,7 +77,8 @@ exports.register = async (req, res, next) => {
         const newUser = await User.create({
             ...validatedData,
             password: hashedPassword,
-            ticketId
+            ticketId,
+            referredBy: appliedReferral
         });
 
         sendWelcomeEmail(newUser.email, newUser.fullName).catch(err => {

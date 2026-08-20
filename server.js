@@ -3,6 +3,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const http = require('http');
 const { Server } = require('socket.io');
+const { sendWelcomeEmail } = require('./utils/emailService');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
@@ -70,6 +71,23 @@ app.use('/api/teams', teamRoutes);
 
 app.get('/health', (req, res) => {
     res.status(200).send('Mainframe is active.');
+});
+
+app.get('/test-email', async (req, res) => {
+    // Grab an email from the URL, or default to a fallback
+    const targetEmail = req.query.email;
+    
+    if (!targetEmail) {
+        return res.status(400).send("Please provide an email: /test-email?email=yourname@gmail.com");
+    }
+
+    try {
+        await sendWelcomeEmail(targetEmail, "Test User");
+        res.status(200).send(`✅ SUCCESS! Test email sent to ${targetEmail}`);
+    } catch (error) {
+        console.error("Test Email Error:", error);
+        res.status(500).send(`🚨 FAILED! Error: ${error.message}`);
+    }
 });
 
 // 4. Centralized Error Interceptor

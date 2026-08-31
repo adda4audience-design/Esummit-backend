@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
     branch: { type: String },
     year: { type: String },
     rollNo: { type: String },
+
+    startupField: { type: String },
+    startupRegistered: { type: String, enum: ['Yes', 'No'] },
+    startupPhase: { type: String, enum: ['Ideation', 'Prototype / MVP', 'Pre-Revenue', 'Revenue-Generating', 'Scaling'] },
     
     // Operational Tracking (Payment Removed)
     checkInStatus: { type: Boolean, default: false },

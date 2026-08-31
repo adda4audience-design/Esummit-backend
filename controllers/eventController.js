@@ -10,19 +10,15 @@ exports.registerForEvent = async (req, res, next) => {
 
             // Inside eventController.registerForEvent
 
-            const TEAM_EVENTS = [
-                "36 hours hackathon", 
+            const TEAM_EVENTS = [ 
                 "IPL Auction simulation", 
                 "The Big Bang theory", 
                 "Pitch please competition"
             ];
 
-            // Check before processing the registration
-            if (TEAM_EVENTS.includes(req.body.eventName)) {
-                return res.status(400).json({
-                    success: false,
-                    error: "This is a team event. Please register through the team dashboard."
-                });
+            const normalized = req.body.eventName?.trim().toLowerCase();
+            if (TEAM_EVENTS.map(e => e.toLowerCase()).includes(normalized)) {
+                return res.status(400).json({ success: false, error: "This is a team event, Please make a Team first" });
             }
 
         const user = await User.findById(req.user.id);

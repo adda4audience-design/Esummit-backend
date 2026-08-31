@@ -8,6 +8,23 @@ exports.registerForEvent = async (req, res, next) => {
             return res.status(400).json({ success: false, error: 'Event name is required.' });
         }
 
+            // Inside eventController.registerForEvent
+
+            const TEAM_EVENTS = [
+                "36 hours hackathon", 
+                "IPL Auction simulation", 
+                "The Big Bang theory", 
+                "Pitch please competition"
+            ];
+
+            // Check before processing the registration
+            if (TEAM_EVENTS.includes(req.body.eventName)) {
+                return res.status(400).json({
+                    success: false,
+                    error: "This is a team event. Please register through the team dashboard."
+                });
+            }
+
         const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ success: false, error: 'User profile not found.' });

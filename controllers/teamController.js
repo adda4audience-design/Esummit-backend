@@ -84,6 +84,14 @@ exports.registerTeamForEvent = async (req, res, next) => {
         if (!team) return res.status(404).json({ success: false, error: 'Team not found.' });
         if (team.leader.toString() !== req.user.id) return res.status(403).json({ success: false, error: 'Only the leader can register the team for events.' });
 
+        const CLOSED_EVENTS = ["IPL Auction simulation"];
+        if (CLOSED_EVENTS.includes(eventName)) {
+            return res.status(400).json({ 
+                success: false, 
+                error: "Registrations for IPL Auction are officially closed." 
+            });
+        }
+        
         if (team.events.includes(eventName)) {
             return res.status(400).json({ success: false, error: 'Team is already registered for this event.' });
         }
